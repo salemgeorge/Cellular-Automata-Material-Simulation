@@ -2,7 +2,8 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 let sandMat = {
-    mass: 60,
+    name: 'sandmat',
+    mass: 40,
     toppleChance: 50,
     timeBetweenUpdate: 150,
     currentUpdateProgress: 0,
@@ -10,6 +11,7 @@ let sandMat = {
 }
 
 let dirtMat = {
+    name: 'dirtmat',
     mass: 90,
     maxStackHeight: 6,
     stackSupport: 1,
@@ -41,9 +43,9 @@ function update() {
 
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height);
 
-    drawDebugBit();
     updateAndDrawGridWorld();
-    drawTestGrid();
+    drawDebugBit();
+    // drawTestGrid();
 
     if(shouldSpawnBit) {
         bitCoords = getGridIndexFromWorld(mouseX, mouseY);
@@ -67,6 +69,11 @@ window.addEventListener('keydown', event => {
         currentSelectedMatIndex--;
         return;
     }
+
+    if(event.key == ' ') {
+        let coords = getGridIndexFromWorld(mouseX, mouseY)
+        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1)
+    }
 });
 
 window.addEventListener('mousemove', event => {
@@ -74,19 +81,20 @@ window.addEventListener('mousemove', event => {
     mouseY = event.y - canvas.offsetTop;
 
     mouseCoords = getGridIndexFromWorld(mouseX, mouseY);
+    console.log(mouseCoords);
 
-    bitCoords = getGridIndexFromWorld(mouseX, mouseY);
+    // bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
-    spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex],1);
+    // spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1);
     // console.log(mouseCoords.gridIndexX, mouseCoords.gridIndexY);
 });
 
 window.addEventListener('mousedown', event => {
     bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
-    spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 2);
-
-    shouldSpawnBit = true;
+    destroyBit(bitCoords.gridIndexX, bitCoords.gridIndexY)
+    // spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1);
+    // shouldSpawnBit = true;
 })
 
 let grid = []
@@ -96,7 +104,7 @@ for(let x = 0; x < 100; x++) {
         grid[x][y] = null;
     }
 }
-console.log(grid);
+// console.log(grid);
 
 update();
 

@@ -1,37 +1,54 @@
 function updateAndDrawGridWorld() {
-    if(gridWorld.length <= 0) return;
-    // console.log
-    for(let i = gridWorld.length - 1; i > 0; i--) {
-        shouldUpdatePos = true;
-        shouldTopple = false;
+    for(let x = grid.length; x--;) {
+        for(let y = grid[x].length; y--;) {
+            if(!grid[x][y]) continue;
 
-        gridWorld[i].mat.currentUpdateProgress += gridWorld[i].mat.mass;
+            bitToUpdate = grid[x][y];
+            if(!bitToUpdate.shouldUpdateBit) {
+                drawBit(x, y, grid[x][y].mat.color);
+                continue;
+            }
 
-        for(let j = 0; j < gridWorld.length - 1; j++) {
-            if(gridWorld[i].x == gridWorld[j].x && gridWorld[i].y + 1 == gridWorld[j].y) {
+            let shouldUpdatePos = true;
+
+            bitBelow = getBitFromGrid(x, y + 1);
+            if(bitBelow || y >= 99) {
                 shouldUpdatePos = false;
+                bitToUpdate.shouldUpdateBit = false;
+                // shouldTopple = Math.random() * Math.floor(10);
+                // console.log(shouldTopple);
+
+                drawBit(x, y, grid[x][y].mat.color)
+                continue;
+            } else {
+                bitToUpdate.mat.currentUpdateProgress += bitToUpdate.mat.mass;
+
+                if(shouldUpdatePos && bitToUpdate.mat.currentUpdateProgress >= bitToUpdate.mat.timeBetweenUpdate) {
+                    bitToUpdate.mat.currentUpdateProgress = 0;
+                    grid[x][y + 1] = grid[x][y];
+                    grid[x][y] = null;
+
+                    grid[x][y + 1].x = x;
+                    grid[x][y + 1].y = y;
+
+                    if(grid[x][y - 1]) grid[x][y - 1].shouldUpdateBit = true;
+    
+                    drawBit(x, y + 1, grid[x][y + 1].mat.color)
+                    continue;
+                } else {
+                    drawBit(x, y, grid[x][y].mat.color);
+                }
             }
         }
-
-        if(gridWorld[i].y < 99 && shouldUpdatePos) {
-
-            if(gridWorld[i].mat.currentUpdateProgress >= gridWorld[i].mat.timeBetweenUpdate) {
-                gridWorld[i].y++;
-                gridWorld[i].mat.currentUpdateProgress = 0;
-            }
-        }
-
-        ctx.fillStyle = gridWorld[i].mat.color;
-        ctx.fillRect(gridWorld[i].x * 5, gridWorld[i].y * 5, 5, 5);
     }
 }
 
 function drawTestGrid() {
     for(let x = 0; x < grid.length; x++) {
         for(let y = 0; y < grid[x].length; y++) {
-            // if(grid[x][y]) {
-                
-            // }
+            if(grid[x][y]) {
+                drawBit(x, y, 'black');
+            }
             ctx.strokeStyle = 'rgba(255, 0, 0, 0.2)';
             ctx.strokeRect(x * 5,  y * 5, 5, 5);
         }
@@ -39,7 +56,9 @@ function drawTestGrid() {
 }
 
 function createBit(x, y, mat) {
-    return {x, y, mat};
+    let shouldUpdateBit = true;
+    grid[x][y] = {x, y, shouldUpdateBit, mat}
+    // return {x, y, isFalling, mat};
 }
 
 function getGridIndexFromWorld(rawX, rawY) {
@@ -51,33 +70,36 @@ function getGridIndexFromWorld(rawX, rawY) {
     return {gridIndexX, gridIndexY};
 }
 
+function getBitFromGrid(x, y) {
+    return grid[x][y];
+}
+
 function drawDebugBit() {
     bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
-    ctx.fillStyle = matList[currentSelectedMatIndex].color;
-    ctx.fillRect(bitCoords.gridIndexX * 5, bitCoords.gridIndexY * 5, 5, 5);
+    // ctx.fillStyle = matList[currentSelectedMatIndex].color;
+    // ctx.fillRect(bitCoords.gridIndexX * 5, bitCoords.gridIndexY * 5, 5, 5);
+    drawBit(bitCoords.gridIndexX, bitCoords.gridIndexY, 'red')
 }
 
 function spawnBit(x, y, mat, spawnType) {
-    let newMat = {...mat};
+    if(grid[x][y]) return;
 
     switch(spawnType) {
         case 1:
-            gridWorld.push(createBit(x, y, {...newMat}));
-            break;
-        case 2:
-            //Bit Left
-            gridWorld.push(createBit(x-1, y, {...newMat}));
-            //Bit Right
-            gridWorld.push(createBit(x+1, y, {...newMat}));
-            //Bit Up
-            gridWorld.push(createBit(x, y-1, {...newMat}));
-            //Bit Down
-            gridWorld.push(createBit(x, y+1, {...newMat}));
-            //Bit Center
-            gridWorld.push(createBit(x, y, {...newMat}));
-
+            createBit(x, y, {...mat})
+            // console.log({...newMat})
             break;
     }
+}
 
+function destroyBit(x, y) {
+    if(grid[x][y]) grid[x][y] = null;
+    if(grid[x][y - 1]) grid[x][y - 1].shouldUpdateBit = true;
+
+}
+
+function drawBit(x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x * 5, y * 5, 5, 5);
 }
