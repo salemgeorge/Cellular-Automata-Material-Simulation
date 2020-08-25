@@ -43,7 +43,7 @@ function update() {
 
     drawDebugBit();
     updateAndDrawGridWorld();
-
+    drawTestGrid();
 
     if(shouldSpawnBit) {
         bitCoords = getGridIndexFromWorld(mouseX, mouseY);
@@ -77,7 +77,7 @@ window.addEventListener('mousemove', event => {
 
     bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
-    spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 2);
+    spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex],1);
     // console.log(mouseCoords.gridIndexX, mouseCoords.gridIndexY);
 });
 
@@ -89,4 +89,14 @@ window.addEventListener('mousedown', event => {
     shouldSpawnBit = true;
 })
 
+let grid = []
+for(let x = 0; x < 100; x++) {
+    grid[x] = [];
+    for(let y = 0; y < 100; y++) {
+        grid[x][y] = null;
+    }
+}
+console.log(grid);
+
 update();
+
