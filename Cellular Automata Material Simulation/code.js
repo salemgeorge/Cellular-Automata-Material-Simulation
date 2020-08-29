@@ -4,7 +4,10 @@ const ctx = canvas.getContext('2d');
 let sandMat = {
     name: 'sandmat',
     mass: 40,
-    toppleChance: 50,
+    toppleHeight: 1,
+    isToppling: false,
+    shouldRevaluateTopple: false,
+    toppleDirection: 'left',
     timeBetweenUpdate: 150,
     currentUpdateProgress: 0,
     color: 'khaki'
@@ -13,8 +16,10 @@ let sandMat = {
 let dirtMat = {
     name: 'dirtmat',
     mass: 90,
-    maxStackHeight: 6,
-    stackSupport: 1,
+    toppleHeight: 3,
+    isToppling: false,
+    toppleDirection: 'left',
+    shouldRevaluateTopple: true,
     timeBetweenUpdate: 100,
     currentUpdateProgress: 0,
     color: 'saddlebrown'
@@ -72,20 +77,26 @@ window.addEventListener('keydown', event => {
 
     if(event.key == ' ') {
         let coords = getGridIndexFromWorld(mouseX, mouseY)
-        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1)
+        if(coords.gridIndexX + 10 > 99) return
+        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 2)
     }
 });
 
 window.addEventListener('mousemove', event => {
     mouseX = event.x - canvas.offsetLeft
-    mouseY = event.y - canvas.offsetTop;
+    mouseY = event.y - canvas.offsetTop
 
-    mouseCoords = getGridIndexFromWorld(mouseX, mouseY);
-    console.log(mouseCoords);
+    // mouseCoords = getGridIndexFromWorld(mouseX, mouseY);
+    // console.log(mouseCoords);
 
-    // bitCoords = getGridIndexFromWorld(mouseX, mouseY);
+    bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
-    // spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1);
+    if(bitCoords.gridIndexX >= 0 && bitCoords.gridIndexX <= 99 && bitCoords.gridIndexY >= 0 && bitCoords.gridIndexY <= 99) {
+        if(currentSelectedMatIndex == 0) {
+            spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1);
+        }
+    }
+   
     // console.log(mouseCoords.gridIndexX, mouseCoords.gridIndexY);
 });
 
