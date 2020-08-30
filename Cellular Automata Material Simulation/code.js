@@ -9,6 +9,7 @@ let sandMat = {
     shouldRevaluateTopple: true,
     toppleDirection: 'left',
     hasGravity: true,
+    isTransparent: false,
     timeBetweenUpdate: 150,
     currentUpdateProgress: 0,
     color: 'khaki'
@@ -21,6 +22,7 @@ let dirtMat = {
     isToppling: false,
     toppleDirection: 'left',
     hasGravity: true,
+    isTransparent: false,
     shouldRevaluateTopple: true,
     timeBetweenUpdate: 100,
     currentUpdateProgress: 0,
@@ -29,12 +31,13 @@ let dirtMat = {
 
 let smokeMat = {
     name: 'smokemat',
-    mass: 50,
+    mass: 10,
     toppleHeight: 1,
-    isToppling: false,
+    isToppling: true,
     shouldRevaluateTopple: true,
     toppleDirection: 'up',
     hasGravity: false,
+    isTransparent: true,
     timeBetweenUpdate: 150,
     currentUpdateProgress: 0,
     color: 'slategray'

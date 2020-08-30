@@ -50,14 +50,6 @@ function updateAndDrawGridWorld() {
 
                     continue;
                 }
-                // isGoingToTopple = roundDown(Math.random() * 100, 1)
-                // if(isGoingToTopple <= bitToUpdate.mat.toppleChance) {
-                //     if(isGoingToTopple < bitToUpdate.mat.toppleChance / 2) grid[x][y].mat.toppleDirection = 'left';
-                //     else grid[x][y].mat.toppleDirection = 'right'
-
-                //     grid[x][y].mat.isToppling = true
-                // }
-                // console.log(grid[x][y].mat.toppleDirection)
 
                 drawBit(x, y, bitToUpdate.mat.color)
                 continue;
@@ -66,7 +58,7 @@ function updateAndDrawGridWorld() {
                 if (bitToUpdate.mat.name == 'smokemat') {
                     handleSmokePhysics(x, y)
                 }
-                if (y <= 0) {
+                if (y == 0) {
                     grid[x][y].mat.isToppling = false
                 }
 
@@ -94,7 +86,7 @@ function updateAndDrawGridWorld() {
                 }
 
                 // drawBit(x, y, bitToUpdate.mat.color)
-                // continue;
+                continue;
             }
 
             bitToUpdate.mat.currentUpdateProgress += bitToUpdate.mat.mass;
@@ -216,7 +208,7 @@ function moveBit(x, y, direction, shouldStopToppling) {
 
     switch (direction) {
         case 'left':
-            bitLeft = getBitFromGrid(x - 1, y)
+            let bitLeft = getBitFromGrid(x - 1, y)
 
             if (!bitLeft && x - 1 >= 0) {
                 grid[x - 1][y] = grid[x][y]
@@ -224,7 +216,7 @@ function moveBit(x, y, direction, shouldStopToppling) {
             }
             break;
         case 'right':
-            bitRight = getBitFromGrid(x + 1, y)
+            let bitRight = getBitFromGrid(x + 1, y)
 
             if (!bitRight && x + 1 <= 99) {
                 grid[x + 1][y] = grid[x][y]
@@ -232,16 +224,20 @@ function moveBit(x, y, direction, shouldStopToppling) {
             }
             break;
         case 'up':
-            bitUp = getBitFromGrid(x, y - 1)
+            let bitUp = getBitFromGrid(x, y - 1)
 
-            if (!bitUp && y - 1 > 0) {
+            if (!bitUp && y - 1 >= 0) {
                 grid[x][y - 1] = grid[x][y]
                 grid[x][y] = null
             }
             break;
         case 'down':
-            grid[x][y + 1] = grid[x][y]
-            grid[x][y] = null;
+            let bitDown = getBitFromGrid(x, y + 1)
+
+            if(!bitDown && y + 1 < 99) {
+                grid[x][y + 1] = grid[x][y]
+                grid[x][y] = null;
+            }
             break;
     }
 }
@@ -286,7 +282,7 @@ function handleSandPhysics(x, y) {
 
     bitLeftAndDown = getBitFromGrid(x - 1, y + bitToUpdate.mat.toppleHeight)
     bitRightAndDown = getBitFromGrid(x + 1, y + bitToUpdate.mat.toppleHeight)
-
+    bitUp = getBitFromGrid
     if (!grid[x][y].mat.isToppling) {
         if (!bitLeftAndDown && !bitRightAndDown) {
             coinflip = Math.random()
@@ -319,25 +315,27 @@ function handleSandPhysics(x, y) {
 
 function handleSmokePhysics(x, y) {
     let bitToUpdate = grid[x][y]
-
-    let bitLeftAndUp = getBitFromGrid(x - 1, y - 1)
-    let bitRightAndUp = getBitFromGrid(x + 1, y - 1)
-    let bitLeft = getBitFromGrid(x - 1, y)
-    let bitRight = getBitFromGrid(x + 1, y)
-    let bitUp = getBitFromGrid(x, y - 1)
-
-    if(bitLeft && bitRight) return;
-    if(y == 1 || bitUp) {
-        let randDir = Math.random()
-        let dir = 'left'
-        if(randDir < 0.5) dir = 'left'
-        else dir = 'right'
     
-        if(dir == 'left') {
-            if(!bitLeft) grid[x][y].mat.toppleDirection = 'left'
+    grid[x][y].mat.toppleDirection = 'up'
+
+    let bitUp = getBitFromGrid(x, y - 1)
+    if(bitUp) {
+        // grid[x][y].mat.isToppling = false
+        // grid[x][y].mat.toppleDirection = 'up'
+        let bitLeft = getBitFromGrid(x - 1, y)
+        let bitRight = getBitFromGrid(x + 1, y)
+        if(!bitLeft && !bitRight) {
+            coinflip = Math.random()
+            if (coinflip < 0.5) {
+                grid[x][y].mat.toppleDirection = 'left'
+            } else {
+                grid[x][y].mat.toppleDirection = 'right'
+            }
+        } else if(!bitLeft && bitRight) {
+            grid[x][y].mat.toppleDirection = 'left'
+        } else {
+            grid[x][y].mat.toppleDirection = 'right'
         }
-    } else {
-        grid[x][y].mat.toppleDirection = 'up'
     }
 
 }
