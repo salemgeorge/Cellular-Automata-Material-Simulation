@@ -3,11 +3,12 @@ const ctx = canvas.getContext('2d');
 
 let sandMat = {
     name: 'sandmat',
-    mass: 40,
+    mass: 50,
     toppleHeight: 1,
     isToppling: false,
-    shouldRevaluateTopple: false,
+    shouldRevaluateTopple: true,
     toppleDirection: 'left',
+    hasGravity: true,
     timeBetweenUpdate: 150,
     currentUpdateProgress: 0,
     color: 'khaki'
@@ -19,15 +20,29 @@ let dirtMat = {
     toppleHeight: 3,
     isToppling: false,
     toppleDirection: 'left',
+    hasGravity: true,
     shouldRevaluateTopple: true,
     timeBetweenUpdate: 100,
     currentUpdateProgress: 0,
     color: 'saddlebrown'
 }
 
+let smokeMat = {
+    name: 'smokemat',
+    mass: 50,
+    toppleHeight: 1,
+    isToppling: false,
+    shouldRevaluateTopple: true,
+    toppleDirection: 'up',
+    hasGravity: false,
+    timeBetweenUpdate: 150,
+    currentUpdateProgress: 0,
+    color: 'slategray'
+}
+
 let newMat = {}
 
-let matList = [sandMat, dirtMat]
+let matList = [sandMat, dirtMat, smokeMat]
 
 let gridWorld = []
 
@@ -92,9 +107,9 @@ window.addEventListener('mousemove', event => {
     bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
     if(bitCoords.gridIndexX >= 0 && bitCoords.gridIndexX <= 99 && bitCoords.gridIndexY >= 0 && bitCoords.gridIndexY <= 99) {
-        if(currentSelectedMatIndex == 0) {
+        // if(currentSelectedMatIndex == 0) {
             spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1);
-        }
+        // }
     }
    
     // console.log(mouseCoords.gridIndexX, mouseCoords.gridIndexY);

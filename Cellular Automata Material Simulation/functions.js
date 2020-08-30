@@ -10,89 +10,18 @@ function updateAndDrawGridWorld() {
             //     continue;
             // }
 
-            let shouldUpdatePos = true;
-
             bitBelow = getBitFromGrid(x, y + 1);
-            if (bitBelow || y >= 99) {
-                shouldUpdatePos = false;
-                bitToUpdate.shouldUpdateBit = false;
+            if (bitToUpdate.mat.hasGravity && bitBelow || y >= 99) {
 
                 if (bitBelow && bitToUpdate.y <= 99 - bitToUpdate.mat.toppleHeight) {
-
                     if (bitToUpdate.mat.name == 'dirtmat') {
                         handleHeightRestrictionPhysics(x, y)
-                        // bitLeftAndDown = getBitFromGrid(x - 1, y + bitToUpdate.mat.toppleHeight)
-                        // bitRightAndDown = getBitFromGrid(x + 1, y + bitToUpdate.mat.toppleHeight)
-                        // bitDownCenter = getBitFromGrid(x, y + bitToUpdate.mat.toppleHeight)
-
-                        // if (!grid[x][y].mat.isToppling) {
-                        //     if (bitDownCenter) {
-                        //         if (!bitLeftAndDown && !bitRightAndDown) {
-                        //             coinflip = Math.random()
-                        //             if (coinflip < 0.5) {
-                        //                 grid[x][y].mat.isToppling = true
-                        //                 grid[x][y].mat.toppleDirection = 'left'
-                        //             } else {
-                        //                 grid[x][y].mat.isToppling = true
-                        //                 grid[x][y].mat.toppleDirection = 'right'
-                        //             }
-                        //         } else if (!bitLeftAndDown) {
-                        //             grid[x][y].mat.isToppling = true
-                        //             grid[x][y].mat.toppleDirection = 'left'
-                        //         }
-                        //         else if (!bitRightAndDown) {
-                        //             grid[x][y].mat.isToppling = true
-                        //             grid[x][y].mat.toppleDirection = 'right'
-                        //         }
-                        //     } else {
-                        //         console.log('nothing down center')
-                        //     }
-                        // }
-                        // else {
-                        //     if(bitLeftAndDown || bitRightAndDown) {
-                        //         grid[x][y].mat.isToppling = false
-                        //     }
-                        // }
-
                     } else if (bitToUpdate.mat.name == 'sandmat') {
                         handleSandPhysics(x, y)
-
-                        // bitLeftAndDown = getBitFromGrid(x - 1, y + bitToUpdate.mat.toppleHeight)
-                        // bitRightAndDown = getBitFromGrid(x + 1, y + bitToUpdate.mat.toppleHeight)
-
-                        // if (!grid[x][y].mat.isToppling) {
-                        //     if (!bitLeftAndDown && !bitRightAndDown) {
-                        //         coinflip = Math.random()
-                        //         if (coinflip < 0.5) {
-                        //             grid[x][y].mat.isToppling = true
-                        //             grid[x][y].mat.toppleDirection = 'left'
-                        //         } else {
-                        //             grid[x][y].mat.isToppling = true
-                        //             grid[x][y].mat.toppleDirection = 'right'
-                        //         }
-                        //     } else if (!bitLeftAndDown) {
-                        //         grid[x][y].mat.isToppling = true
-                        //         grid[x][y].mat.toppleDirection = 'left'
-                        //     }
-                        //     else if (!bitRightAndDown) {
-                        //         grid[x][y].mat.isToppling = true
-                        //         grid[x][y].mat.toppleDirection = 'right'
-                        //     }
-                        // } else {
-                        //     switch (grid[x][y].mat.toppleDirection) {
-                        //         case 'left':
-                        //             if (bitLeftAndDown) grid[x][y].mat.isToppling = false
-                        //             break;
-                        //         case 'right':
-                        //             if (bitRightAndDown) grid[x][y].mat.isToppling = false
-                        //             break;
-                        //     }
-                        // }
                     }
                 } else if (y >= 99) {
                     grid[x][y].mat.isToppling = false
                 }
-
 
                 if (grid[x][y].mat.isToppling) {
                     // grid[x][y].mat.currentUpdateProgress += grid[x][y].mat.mass
@@ -107,9 +36,19 @@ function updateAndDrawGridWorld() {
                             drawBit(x + 1, y, bitToUpdate.mat.color)
 
                             continue;
+                        case 'up':
+                            moveBit(x, y, 'up', bitToUpdate.mat.shouldRevaluateTopple)
+                            drawBit(x, y - 1, bitToUpdate.mat.color)
+
+                            continue;
+                        case 'down':
+                            moveBit(x, y, 'down', bitToUpdate.mat.shouldRevaluateTopple)
+                            drawBit(x, y + 1, bitToUpdate.mat.color)
+
+                            continue;
                     }
 
-                    continue
+                    continue;
                 }
                 // isGoingToTopple = roundDown(Math.random() * 100, 1)
                 // if(isGoingToTopple <= bitToUpdate.mat.toppleChance) {
@@ -122,25 +61,75 @@ function updateAndDrawGridWorld() {
 
                 drawBit(x, y, bitToUpdate.mat.color)
                 continue;
+
+            } else if (!bitToUpdate.mat.hasGravity || y <= 0) {
+                if (bitToUpdate.mat.name == 'smokemat') {
+                    handleSmokePhysics(x, y)
+                }
+                if (y <= 0) {
+                    grid[x][y].mat.isToppling = false
+                }
+
+                switch (grid[x][y].mat.toppleDirection) {
+                    case 'left':
+                        moveBit(x, y, 'left', bitToUpdate.mat.shouldRevaluateTopple)
+                        drawBit(x - 1, y, bitToUpdate.mat.color)
+
+                        continue;
+                    case 'right':
+                        moveBit(x, y, 'right', bitToUpdate.mat.shouldRevaluateTopple)
+                        drawBit(x + 1, y, bitToUpdate.mat.color)
+
+                        continue;
+                    case 'up':
+                        moveBit(x, y, 'up', bitToUpdate.mat.shouldRevaluateTopple)
+                        drawBit(x, y - 1, bitToUpdate.mat.color)
+
+                        continue;
+                    case 'down':
+                        moveBit(x, y, 'down', bitToUpdate.mat.shouldRevaluateTopple)
+                        drawBit(x, y + 1, bitToUpdate.mat.color)
+
+                        continue;
+                }
+
+                // drawBit(x, y, bitToUpdate.mat.color)
+                // continue;
             }
 
             bitToUpdate.mat.currentUpdateProgress += bitToUpdate.mat.mass;
 
-            if (shouldUpdatePos && bitToUpdate.mat.currentUpdateProgress >= bitToUpdate.mat.timeBetweenUpdate) {
-                bitToUpdate.mat.currentUpdateProgress = 0;
-                grid[x][y + 1] = grid[x][y];
-                grid[x][y] = null;
+            if (bitToUpdate.mat.currentUpdateProgress >= bitToUpdate.mat.timeBetweenUpdate) {
+                if (bitToUpdate.mat.hasGravity) {
+                    bitToUpdate.mat.currentUpdateProgress = 0;
+                    grid[x][y + 1] = grid[x][y];
+                    grid[x][y] = null;
 
-                grid[x][y + 1].x = x;
-                grid[x][y + 1].y = y;
+                    grid[x][y + 1].x = x;
+                    grid[x][y + 1].y = y;
 
-                if (grid[x][y - 1]) grid[x][y - 1].shouldUpdateBit = true;
+                    // if (grid[x][y - 1]) grid[x][y - 1].shouldUpdateBit = true;
 
-                drawBit(x, y + 1, grid[x][y + 1].mat.color)
-                continue;
+                    drawBit(x, y + 1, grid[x][y + 1].mat.color)
+                    continue;
+                } else {
+                    console.log('is moving down')
+                    bitToUpdate.mat.currentUpdateProgress = 0;
+                    grid[x][y - 1] = grid[x][y];
+                    grid[x][y] = null;
+
+                    grid[x][y - 1].x = x;
+                    grid[x][y - 1].y = y;
+
+                    // if (grid[x][y - 1]) grid[x][y - 1].shouldUpdateBit = true;
+
+                    drawBit(x, y - 1, grid[x][y - 1].mat.color)
+                    continue;
+                }
             } else {
                 drawBit(x, y, grid[x][y].mat.color);
             }
+
         }
     }
 }
@@ -227,10 +216,6 @@ function moveBit(x, y, direction, shouldStopToppling) {
 
     switch (direction) {
         case 'left':
-            grid[x][y].shouldUpdateBit = true;
-            // grid[x][y].mat.isToppling = false;
-
-            // if(grid[x - 1].length > 99) break;
             bitLeft = getBitFromGrid(x - 1, y)
 
             if (!bitLeft && x - 1 >= 0) {
@@ -239,10 +224,6 @@ function moveBit(x, y, direction, shouldStopToppling) {
             }
             break;
         case 'right':
-            grid[x][y].shouldUpdateBit = true;
-            // grid[x][y].mat.isToppling = false;
-
-            // if(grid[x + 1].length > 99) break;
             bitRight = getBitFromGrid(x + 1, y)
 
             if (!bitRight && x + 1 <= 99) {
@@ -251,20 +232,14 @@ function moveBit(x, y, direction, shouldStopToppling) {
             }
             break;
         case 'up':
-            grid[x][y].shouldUpdateBit = true;
-            // grid[x][y].mat.isToppling = false;
+            bitUp = getBitFromGrid(x, y - 1)
 
-            // if(grid[y - 1].length > 99) break;
-
-            grid[x][y - 1] = grid[x][y]
-            grid[x][y] = null
+            if (!bitUp && y - 1 > 0) {
+                grid[x][y - 1] = grid[x][y]
+                grid[x][y] = null
+            }
             break;
         case 'down':
-            grid[x][y].shouldUpdateBit = true;
-            // grid[x][y].mat.isToppling = false;
-
-            // if(grid[y - 1].length > 99) break;
-
             grid[x][y + 1] = grid[x][y]
             grid[x][y] = null;
             break;
@@ -340,4 +315,29 @@ function handleSandPhysics(x, y) {
                 break;
         }
     }
+}
+
+function handleSmokePhysics(x, y) {
+    let bitToUpdate = grid[x][y]
+
+    let bitLeftAndUp = getBitFromGrid(x - 1, y - 1)
+    let bitRightAndUp = getBitFromGrid(x + 1, y - 1)
+    let bitLeft = getBitFromGrid(x - 1, y)
+    let bitRight = getBitFromGrid(x + 1, y)
+    let bitUp = getBitFromGrid(x, y - 1)
+
+    if(bitLeft && bitRight) return;
+    if(y == 1 || bitUp) {
+        let randDir = Math.random()
+        let dir = 'left'
+        if(randDir < 0.5) dir = 'left'
+        else dir = 'right'
+    
+        if(dir == 'left') {
+            if(!bitLeft) grid[x][y].mat.toppleDirection = 'left'
+        }
+    } else {
+        grid[x][y].mat.toppleDirection = 'up'
+    }
+
 }
