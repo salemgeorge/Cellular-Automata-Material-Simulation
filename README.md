@@ -1,8 +1,8 @@
 # Cellular-Automata-Material-Simulation
 
-If you are going to try this out, just keep in mind that currently, there is essentialy nothing to check out, just some pixels that fall down the screen and can stack ontop of eachother.
+If you are going to try this out, just keep in mind that currently, there is essentialy nothing to check out, just some pixels that fall down the screen and can stack ontop of eachother. And occasionaly, they topple over.
 
-From my testing, it is buttery smooth. If you do encounter bad performance, just remember that I am still working on optimizing it.
+From my testing, it is buttery smooth. If you encounter framerate drops, just remember that I am still working on optimizing it.
 
 How to test it out:
 
@@ -12,5 +12,12 @@ Controls:
 
 Right Arrow: Cycles materials right.
 Left Arrow: Cycles materials left.
+Space Bar: Spawns in a square made of whatever bit you have selected. If the 'square' looks weird, its just the bit logic.
 
-Move your cursor around to spawn in 'bits'. But thats just what I call them.
+Current game features:
+
+Gravity,
+Toppling,
+Sand,
+Dirt,
+Destruction
