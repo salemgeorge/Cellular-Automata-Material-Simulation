@@ -85,7 +85,7 @@ function updateAndDrawGridWorld() {
                         continue;
                 }
 
-                // drawBit(x, y, bitToUpdate.mat.color)
+                drawBit(x, y, bitToUpdate.mat.color)
                 continue;
             }
 
@@ -164,7 +164,7 @@ function drawDebugBit() {
 
     // ctx.fillStyle = matList[currentSelectedMatIndex].color;
     // ctx.fillRect(bitCoords.gridIndexX * 5, bitCoords.gridIndexY * 5, 5, 5);
-    drawBit(bitCoords.gridIndexX, bitCoords.gridIndexY, 'red')
+    drawBit(0, 0, 'red')
 }
 
 function spawnBit(x, y, mat, spawnType) {
@@ -210,7 +210,7 @@ function moveBit(x, y, direction, shouldStopToppling) {
         case 'left':
             let bitLeft = getBitFromGrid(x - 1, y)
 
-            if (!bitLeft && x - 1 >= 0) {
+            if (!bitLeft && x != 0) {
                 grid[x - 1][y] = grid[x][y]
                 grid[x][y] = null;
             }
@@ -226,7 +226,7 @@ function moveBit(x, y, direction, shouldStopToppling) {
         case 'up':
             let bitUp = getBitFromGrid(x, y - 1)
 
-            if (!bitUp && y - 1 >= 0) {
+            if (!bitUp && y >= 2) {
                 grid[x][y - 1] = grid[x][y]
                 grid[x][y] = null
             }
@@ -282,7 +282,7 @@ function handleSandPhysics(x, y) {
 
     bitLeftAndDown = getBitFromGrid(x - 1, y + bitToUpdate.mat.toppleHeight)
     bitRightAndDown = getBitFromGrid(x + 1, y + bitToUpdate.mat.toppleHeight)
-    bitUp = getBitFromGrid
+
     if (!grid[x][y].mat.isToppling) {
         if (!bitLeftAndDown && !bitRightAndDown) {
             coinflip = Math.random()
@@ -314,12 +314,12 @@ function handleSandPhysics(x, y) {
 }
 
 function handleSmokePhysics(x, y) {
-    let bitToUpdate = grid[x][y]
-    
     grid[x][y].mat.toppleDirection = 'up'
 
     let bitUp = getBitFromGrid(x, y - 1)
+
     if(bitUp) {
+        // console.log(bitUp)
         // grid[x][y].mat.isToppling = false
         // grid[x][y].mat.toppleDirection = 'up'
         let bitLeft = getBitFromGrid(x - 1, y)

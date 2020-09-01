@@ -18,12 +18,13 @@ let sandMat = {
 let dirtMat = {
     name: 'dirtmat',
     mass: 90,
+    // mass: 0,
     toppleHeight: 3,
     isToppling: false,
+    shouldRevaluateTopple: true,
     toppleDirection: 'left',
     hasGravity: true,
     isTransparent: false,
-    shouldRevaluateTopple: true,
     timeBetweenUpdate: 100,
     currentUpdateProgress: 0,
     color: 'saddlebrown'
@@ -31,7 +32,7 @@ let dirtMat = {
 
 let smokeMat = {
     name: 'smokemat',
-    mass: 10,
+    mass: 30,
     toppleHeight: 1,
     isToppling: true,
     shouldRevaluateTopple: true,
@@ -96,7 +97,7 @@ window.addEventListener('keydown', event => {
     if(event.key == ' ') {
         let coords = getGridIndexFromWorld(mouseX, mouseY)
         if(coords.gridIndexX + 10 > 99) return
-        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 2)
+        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1)
     }
 });
 
