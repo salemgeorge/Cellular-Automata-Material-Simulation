@@ -16,8 +16,8 @@ let sandMat = {
 
 let dirtMat = {
     name: 'dirtmat',
-    // mass: 90,
-    mass: 0,
+    mass: 90,
+    // mass: 0,
     toppleHeight: 1,
     isToppling: false,
     shouldRevaluateTopple: true,
