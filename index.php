@@ -1,1 +1,1 @@
-<?php include_once("home.html"); ?>
+<?php include_once("/Cellular Automata Material Simulation/home.html"); ?>
