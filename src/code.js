@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 
 let sandMat = {
     name: 'sandmat',
+    currentOverlay: null,
     canBurn: false,
     mass: 50,
     toppleHeight: 1,
@@ -17,6 +18,7 @@ let sandMat = {
 
 let dirtMat = {
     name: 'dirtmat',
+    currentOverlay: null,
     canBurn: false,
     mass: 90,
     toppleHeight: 2,
@@ -45,16 +47,29 @@ let smokeMat = {
 
 let woodMat = {
     name: 'woodmat',
+    currentOverlay: null,
     canBurn: true,
     isBurning: false,
     burnTime: 5,
     currentBurnProgress: 0,
+    spreadChance:
     mass: 95,
     toppleDirection: 'down',
     hasGravity: true,
     timeBetweenUpdate: 100,
     currentUpdateProgress: 0,
     color: '#CA6F1E'
+}
+
+let smokeOverlayMat = {
+    name: 'smokeOverlay',
+    canBurn: false,
+    mass: 30,
+    toppleDirection: 'up',
+    hasGravity: false,
+    timeBetweenUpdate: 150,
+    currentUpdateProgress: 0,
+    color: 'slategray'
 }
 
 let newMat = {}
@@ -137,7 +152,7 @@ window.addEventListener('mousedown', event => {
         bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
         destroyBit(bitCoords.gridIndexX, bitCoords.gridIndexY)
-    } else if(event.button == 1) {
+    } else if(event.button == 2) {
         bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
         setBitOnFire(bitCoords.gridIndexX, bitCoords.gridIndexY)
@@ -146,6 +161,10 @@ window.addEventListener('mousedown', event => {
     // spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1);
     // shouldSpawnBit = true;
 })
+
+window.addEventListener('contextmenu', event => { 
+    event.preventDefault(); 
+}, false);
 
 let grid = []
 for(let x = 0; x < 100; x++) {

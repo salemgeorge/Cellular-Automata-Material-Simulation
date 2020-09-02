@@ -14,11 +14,23 @@ function updateAndDrawGridWorld() {
             if (bitToUpdate.mat.hasGravity && !bitToUpdate.mat.canBurn && bitBelow || y >= 99) {
 
                 if (bitBelow && bitToUpdate.y <= 99 - bitToUpdate.mat.toppleHeight) {
-                    if (bitToUpdate.mat.name == 'dirtmat') {
-                        handleHeightRestrictionPhysics(x, y)
-                    } else if (bitToUpdate.mat.name == 'sandmat') {
-                        handleSandPhysics(x, y)
+
+                    switch(bitToUpdate.mat.name) {
+                        case 'dirtmat':
+                            handleHeightRestrictionPhysics(x, y)
+                            handleOverlay(x, y)
+                            break;
+                        case 'sandmat':
+                            handleSandPhysics(x, y)
+                            handleOverlay(x, y)
+                            break;
                     }
+
+                    // if (bitToUpdate.mat.name == 'dirtmat') {
+                    //     handleHeightRestrictionPhysics(x, y)
+                    // } else if (bitToUpdate.mat.name == 'sandmat') {
+                    //     handleSandPhysics(x, y)
+                    // }
                 } else if (y >= 99) {
                     grid[x][y].mat.isToppling = false
                 }
@@ -41,7 +53,7 @@ function updateAndDrawGridWorld() {
     
                             continue;
                         case 'up':
-                            if(y > 0 && !grid[x][y - 1]) {
+                            if(y > 0 && !grid[x][y - 1]) {  
                                 moveBit(x, y, 'up', bitToUpdate.mat.shouldRevaluateTopple)
                                 drawBit(x, y - 1, bitToUpdate.mat.color)
                             } else drawBit(x, y, bitToUpdate.mat.color)
@@ -55,6 +67,7 @@ function updateAndDrawGridWorld() {
     
                             continue;
                     }
+
 
                     continue;
                 }
@@ -76,7 +89,7 @@ function updateAndDrawGridWorld() {
                             moveBit(x, y, 'left', bitToUpdate.mat.shouldRevaluateTopple)
                             drawBit(x - 1, y, bitToUpdate.mat.color)
                         } else drawBit(x, y, bitToUpdate.mat.color)
-
+                        
                         continue;
                     case 'right':
                         if(x < 99 && !grid[x + 1][y]) {
@@ -112,6 +125,13 @@ function updateAndDrawGridWorld() {
                     if(grid[x][y].mat.currentBurnProgress >= grid[x][y].mat.burnTime) {
                         grid[x][y].mat.currentBurnProgress = 0
 
+                        let bitUp = getBitFromGrid(x, y - 1)
+                        if(bitUp && !bitUp.mat.currentOverlay) {
+                            grid[x][y - 1].mat.currentOverlay = { ...smokeOverlayMat }
+                        } else {
+                            spawnBit(x, y - 1, smokeMat, 1)
+                        }
+
                         let bitLeft = getBitFromGrid(x - 1, y)
                         if(bitLeft) {
                             if(!bitLeft.mat.isBurning && bitLeft.mat.canBurn) {
@@ -119,6 +139,31 @@ function updateAndDrawGridWorld() {
                             }
                         }
                     }
+                }
+
+                switch(bitToUpdate.mat.name) {
+                    case 'woodmat':
+                        console.log(grid[x][y].mat)
+                        handleOverlay(x, y)
+                            // if(grid[x][y].mat.currentOverlay) {
+                            //     console.log('has overlay')
+                            //     grid[x][y].mat.currentOverlay.currentUpdateProgress += bitToUpdate.mat.currentOverlay.mass
+
+                            //     if(grid[x][y].mat.currentOverlay.currentUpdateProgress >= grid[x][y].mat.currentOverlay.timeBetweenUpdate) {
+                            //         grid[x][y].mat.currentOverlay.currentUpdateProgress = 0;
+
+                            //         let bitUp = getBitFromGrid(x, y - 1)
+                            //         if(bitUp && !bitUp.mat.currentOverlay) {
+                            //             grid[x][y - 1].mat.currentOverlay = grid[x][y].mat.currentOverlay
+                            //             grid[x][y].mat.currentOverlay = null
+
+                            //         } else if(!bitUp) {
+                            //             grid[x][y].mat.currentOverlay = null
+                            //             spawnBit(x, y - 1, smokeMat, 1)
+                            //         }
+                            //     }
+                            // }
+                        break;
                 }
 
                 // drawBit(x, y, bitToUpdate.mat.color)
@@ -227,6 +272,13 @@ function spawnBit(x, y, mat, spawnType) {
     }
 }
 
+function spawnOverlayBit(x, y, overlayType) {
+    switch(overlayType) {
+        case 0:
+            
+    }
+}
+
 function destroyBit(x, y) {
     if (grid[x][y]) grid[x][y] = null;
     if (grid[x][y - 1]) grid[x][y - 1].shouldUpdateBit = true;
@@ -242,7 +294,10 @@ function setBitOnFire(x, y) {
 }
 
 function drawBit(x, y, color) {
-    ctx.fillStyle = color;
+    if(grid[x][y] && grid[x][y].mat.currentOverlay) {
+        ctx.fillStyle = grid[x][y].mat.currentOverlay.color;
+    } else ctx.fillStyle = color
+
     ctx.fillRect(x * 5, y * 5, 5, 5);
 }
 
@@ -372,4 +427,26 @@ function handleSmokePhysics(x, y) {
         }
     }
 
+}
+
+function handleOverlay(x, y) {
+    let bitToUpdate = getBitFromGrid(x, y)
+
+    if(grid[x][y].mat.currentOverlay) {
+        grid[x][y].mat.currentOverlay.currentUpdateProgress += bitToUpdate.mat.currentOverlay.mass
+
+        if(grid[x][y].mat.currentOverlay.currentUpdateProgress >= grid[x][y].mat.currentOverlay.timeBetweenUpdate) {
+            grid[x][y].mat.currentOverlay.currentUpdateProgress = 0;
+
+            let bitUp = getBitFromGrid(x, y - 1)
+            if(bitUp && !bitUp.mat.currentOverlay) {
+                grid[x][y - 1].mat.currentOverlay = grid[x][y].mat.currentOverlay
+                grid[x][y].mat.currentOverlay = null
+
+            } else if(!bitUp) {
+                grid[x][y].mat.currentOverlay = null
+                spawnBit(x, y - 1, smokeMat, 1)
+            }
+        }
+    }
 }
