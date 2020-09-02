@@ -21,9 +21,9 @@ Method #2:
 
 ## Current game features:
 
-Gravity,
-Toppling,
-Sand,
-Dirt,
-Smoke,
-Destruction
+- Gravity
+- Toppling
+- Sand
+- Dirt
+- Smoke
+- Destruction
