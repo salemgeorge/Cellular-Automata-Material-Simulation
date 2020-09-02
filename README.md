@@ -27,3 +27,11 @@ Method #2:
 - Dirt
 - Smoke
 - Destruction
+
+## Stuff I am going to add:
+
+[] TNT
+[] Fire
+[] Water
+[] Missile
+[] Fixing any bugs I find
