@@ -15,7 +15,7 @@ function updateAndDrawGridWorld() {
 
                 if (bitBelow && bitToUpdate.y <= 99 - bitToUpdate.mat.toppleHeight) {
                     if (bitToUpdate.mat.name == 'dirtmat') {
-                        handleHeightRestrictionPhysics(x, y)
+                        // handleHeightRestrictionPhysics(x, y)
                     } else if (bitToUpdate.mat.name == 'sandmat') {
                         handleSandPhysics(x, y)
                     }
@@ -27,24 +27,32 @@ function updateAndDrawGridWorld() {
                     // grid[x][y].mat.currentUpdateProgress += grid[x][y].mat.mass
                     switch (grid[x][y].mat.toppleDirection) {
                         case 'left':
-                            moveBit(x, y, 'left', bitToUpdate.mat.shouldRevaluateTopple)
-                            drawBit(x - 1, y, bitToUpdate.mat.color)
-
+                            if (x > 0 && !grid[x - 1][y]) {
+                                moveBit(x, y, 'left', bitToUpdate.mat.shouldRevaluateTopple)
+                                drawBit(x - 1, y, bitToUpdate.mat.color)
+                            } else drawBit(x, y, bitToUpdate.mat.color)
+    
                             continue;
                         case 'right':
-                            moveBit(x, y, 'right', bitToUpdate.mat.shouldRevaluateTopple)
-                            drawBit(x + 1, y, bitToUpdate.mat.color)
-
+                            if(x < 99 && !grid[x + 1][y]) {
+                                moveBit(x, y, 'right', bitToUpdate.mat.shouldRevaluateTopple)
+                                drawBit(x + 1, y, bitToUpdate.mat.color)
+                            } else drawBit(x, y, bitToUpdate.mat.color)
+    
                             continue;
                         case 'up':
-                            moveBit(x, y, 'up', bitToUpdate.mat.shouldRevaluateTopple)
-                            drawBit(x, y - 1, bitToUpdate.mat.color)
-
+                            if(y > 0 && !grid[x][y - 1]) {
+                                moveBit(x, y, 'up', bitToUpdate.mat.shouldRevaluateTopple)
+                                drawBit(x, y - 1, bitToUpdate.mat.color)
+                            } else drawBit(x, y, bitToUpdate.mat.color)
+    
                             continue;
                         case 'down':
-                            moveBit(x, y, 'down', bitToUpdate.mat.shouldRevaluateTopple)
-                            drawBit(x, y + 1, bitToUpdate.mat.color)
-
+                            if(y < 99 && !grid[x][y + 1]) {
+                                moveBit(x, y, 'down', bitToUpdate.mat.shouldRevaluateTopple)
+                                drawBit(x, y + 1, bitToUpdate.mat.color)
+                            } else drawBit(x, y, bitToUpdate.mat.color)
+    
                             continue;
                     }
 
@@ -64,23 +72,31 @@ function updateAndDrawGridWorld() {
 
                 switch (grid[x][y].mat.toppleDirection) {
                     case 'left':
-                        moveBit(x, y, 'left', bitToUpdate.mat.shouldRevaluateTopple)
-                        drawBit(x - 1, y, bitToUpdate.mat.color)
+                        if (x > 0 && !grid[x - 1][y]) {
+                            moveBit(x, y, 'left', bitToUpdate.mat.shouldRevaluateTopple)
+                            drawBit(x - 1, y, bitToUpdate.mat.color)
+                        } else drawBit(x, y, bitToUpdate.mat.color)
 
                         continue;
                     case 'right':
-                        moveBit(x, y, 'right', bitToUpdate.mat.shouldRevaluateTopple)
-                        drawBit(x + 1, y, bitToUpdate.mat.color)
+                        if(x < 99 && !grid[x + 1][y]) {
+                            moveBit(x, y, 'right', bitToUpdate.mat.shouldRevaluateTopple)
+                            drawBit(x + 1, y, bitToUpdate.mat.color)
+                        } else drawBit(x, y, bitToUpdate.mat.color)
 
                         continue;
                     case 'up':
-                        moveBit(x, y, 'up', bitToUpdate.mat.shouldRevaluateTopple)
-                        drawBit(x, y - 1, bitToUpdate.mat.color)
+                        if(y > 0 && !grid[x][y - 1]) {
+                            moveBit(x, y, 'up', bitToUpdate.mat.shouldRevaluateTopple)
+                            drawBit(x, y - 1, bitToUpdate.mat.color)
+                        } else drawBit(x, y, bitToUpdate.mat.color)
 
                         continue;
                     case 'down':
-                        moveBit(x, y, 'down', bitToUpdate.mat.shouldRevaluateTopple)
-                        drawBit(x, y + 1, bitToUpdate.mat.color)
+                        if(y < 99 && !grid[x][y + 1]) {
+                            moveBit(x, y, 'down', bitToUpdate.mat.shouldRevaluateTopple)
+                            drawBit(x, y + 1, bitToUpdate.mat.color)
+                        } else drawBit(x, y, bitToUpdate.mat.color)
 
                         continue;
                 }
@@ -196,7 +212,6 @@ function drawBit(x, y, color) {
 }
 
 function moveBit(x, y, direction, shouldStopToppling) {
-
     if (grid[x][y].mat.currentUpdateProgress < grid[x][y].mat.timeBetweenUpdate) {
         grid[x][y].mat.currentUpdateProgress += grid[x][y].mat.mass
         grid[x][y].shouldUpdateBit = true
@@ -208,36 +223,20 @@ function moveBit(x, y, direction, shouldStopToppling) {
 
     switch (direction) {
         case 'left':
-            let bitLeft = getBitFromGrid(x - 1, y)
-
-            if (!bitLeft && x != 0) {
-                grid[x - 1][y] = grid[x][y]
-                grid[x][y] = null;
-            }
+            grid[x - 1][y] = grid[x][y]
+            grid[x][y] = null;
             break;
         case 'right':
-            let bitRight = getBitFromGrid(x + 1, y)
-
-            if (!bitRight && x + 1 <= 99) {
-                grid[x + 1][y] = grid[x][y]
-                grid[x][y] = null;
-            }
+            grid[x + 1][y] = grid[x][y]
+            grid[x][y] = null;
             break;
         case 'up':
-            let bitUp = getBitFromGrid(x, y - 1)
-
-            if (!bitUp && y >= 2) {
-                grid[x][y - 1] = grid[x][y]
-                grid[x][y] = null
-            }
+            grid[x][y - 1] = grid[x][y]
+            grid[x][y] = null
             break;
         case 'down':
-            let bitDown = getBitFromGrid(x, y + 1)
-
-            if(!bitDown && y + 1 < 99) {
-                grid[x][y + 1] = grid[x][y]
-                grid[x][y] = null;
-            }
+            grid[x][y + 1] = grid[x][y]
+            grid[x][y] = null;
             break;
     }
 }
@@ -318,20 +317,20 @@ function handleSmokePhysics(x, y) {
 
     let bitUp = getBitFromGrid(x, y - 1)
 
-    if(bitUp) {
+    if (bitUp) {
         // console.log(bitUp)
         // grid[x][y].mat.isToppling = false
         // grid[x][y].mat.toppleDirection = 'up'
         let bitLeft = getBitFromGrid(x - 1, y)
         let bitRight = getBitFromGrid(x + 1, y)
-        if(!bitLeft && !bitRight) {
+        if (!bitLeft && !bitRight) {
             coinflip = Math.random()
             if (coinflip < 0.5) {
                 grid[x][y].mat.toppleDirection = 'left'
             } else {
                 grid[x][y].mat.toppleDirection = 'right'
             }
-        } else if(!bitLeft && bitRight) {
+        } else if (!bitLeft && bitRight) {
             grid[x][y].mat.toppleDirection = 'left'
         } else {
             grid[x][y].mat.toppleDirection = 'right'
