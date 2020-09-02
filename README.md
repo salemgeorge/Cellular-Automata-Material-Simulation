@@ -30,8 +30,8 @@ Method #2:
 
 ## Stuff I am going to add:
 
-[] TNT
-[] Fire
-[] Water
-[] Missile
-[] Fixing any bugs I find
+- [] TNT
+- [] Fire
+- [] Water
+- [] Missile
+- [] Fixing any bugs I find
