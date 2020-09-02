@@ -11,7 +11,7 @@ function updateAndDrawGridWorld() {
             // }
 
             bitBelow = getBitFromGrid(x, y + 1);
-            if (bitToUpdate.mat.hasGravity && bitBelow || y >= 99) {
+            if (bitToUpdate.mat.hasGravity && !bitToUpdate.mat.canBurn && bitBelow || y >= 99) {
 
                 if (bitBelow && bitToUpdate.y <= 99 - bitToUpdate.mat.toppleHeight) {
                     if (bitToUpdate.mat.name == 'dirtmat') {
@@ -62,7 +62,7 @@ function updateAndDrawGridWorld() {
                 drawBit(x, y, bitToUpdate.mat.color)
                 continue;
 
-            } else if (!bitToUpdate.mat.hasGravity || y <= 0) {
+            } else if (!bitToUpdate.mat.hasGravity && !bitToUpdate.mat.canBurn || y <= 0) {
                 if (bitToUpdate.mat.name == 'smokemat') {
                     handleSmokePhysics(x, y)
                 }
@@ -102,6 +102,32 @@ function updateAndDrawGridWorld() {
                 }
 
                 drawBit(x, y, bitToUpdate.mat.color)
+                continue;
+
+            } else if(bitToUpdate.mat.canBurn) {
+                if (bitToUpdate.mat.isBurning) {
+                    grid[x][y].mat.color =  '#C70039'
+                    
+                    grid[x][y].mat.currentBurnProgress += 0.1
+                    if(grid[x][y].mat.currentBurnProgress >= grid[x][y].mat.burnTime) {
+                        grid[x][y].mat.currentBurnProgress = 0
+
+                        let bitLeft = getBitFromGrid(x - 1, y)
+                        if(bitLeft) {
+                            if(!bitLeft.mat.isBurning && bitLeft.mat.canBurn) {
+                                grid[x - 1][ y].mat.isBurning = true
+                            }
+                        }
+                    }
+                }
+
+                // drawBit(x, y, bitToUpdate.mat.color)
+
+                if(y < 99 && !grid[x][y + 1]) {
+                    moveBit(x, y, 'down', bitToUpdate.mat.shouldRevaluateTopple)
+                    drawBit(x, y + 1, bitToUpdate.mat.color)
+                } else drawBit(x, y, bitToUpdate.mat.color)
+
                 continue;
             }
 
@@ -204,6 +230,15 @@ function spawnBit(x, y, mat, spawnType) {
 function destroyBit(x, y) {
     if (grid[x][y]) grid[x][y] = null;
     if (grid[x][y - 1]) grid[x][y - 1].shouldUpdateBit = true;
+}
+
+function setBitOnFire(x, y) {
+    let bitToBurn = getBitFromGrid(x, y)
+
+    if(!bitToBurn || !bitToBurn.mat.canBurn) return;
+    
+    grid[x][y].mat.isBurning = true;
+    console.log(grid[x][y].mat.isBurning)
 }
 
 function drawBit(x, y, color) {

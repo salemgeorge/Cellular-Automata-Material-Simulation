@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 
 let sandMat = {
     name: 'sandmat',
+    canBurn: false,
     mass: 50,
     toppleHeight: 1,
     isToppling: false,
@@ -16,8 +17,8 @@ let sandMat = {
 
 let dirtMat = {
     name: 'dirtmat',
+    canBurn: false,
     mass: 90,
-    // mass: 0,
     toppleHeight: 2,
     isToppling: false,
     shouldRevaluateTopple: true,
@@ -30,6 +31,7 @@ let dirtMat = {
 
 let smokeMat = {
     name: 'smokemat',
+    canBurn: false,
     mass: 30,
     toppleHeight: 1,
     isToppling: true,
@@ -41,9 +43,23 @@ let smokeMat = {
     color: 'slategray'
 }
 
+let woodMat = {
+    name: 'woodmat',
+    canBurn: true,
+    isBurning: false,
+    burnTime: 5,
+    currentBurnProgress: 0,
+    mass: 95,
+    toppleDirection: 'down',
+    hasGravity: true,
+    timeBetweenUpdate: 100,
+    currentUpdateProgress: 0,
+    color: '#CA6F1E'
+}
+
 let newMat = {}
 
-let matList = [sandMat, dirtMat, smokeMat]
+let matList = [sandMat, dirtMat, smokeMat, woodMat]
 
 let gridWorld = []
 
@@ -117,9 +133,16 @@ window.addEventListener('mousemove', event => {
 });
 
 window.addEventListener('mousedown', event => {
-    bitCoords = getGridIndexFromWorld(mouseX, mouseY);
+    if(event.button == 0) {
+        bitCoords = getGridIndexFromWorld(mouseX, mouseY);
 
-    destroyBit(bitCoords.gridIndexX, bitCoords.gridIndexY)
+        destroyBit(bitCoords.gridIndexX, bitCoords.gridIndexY)
+    } else if(event.button == 1) {
+        bitCoords = getGridIndexFromWorld(mouseX, mouseY);
+
+        setBitOnFire(bitCoords.gridIndexX, bitCoords.gridIndexY)
+    }
+
     // spawnBit(bitCoords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1);
     // shouldSpawnBit = true;
 })
