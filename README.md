@@ -32,8 +32,8 @@ Method #2:
 
 - [ ] TNT
 - [ ] Fire
- - [ ] Wood
+  - [ ] Wood
 - [ ] Water
- - [ ] Density
+  - [ ] Density
 - [ ] Missiles
 - [ ] Fixing any bugs I find
