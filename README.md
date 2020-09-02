@@ -33,5 +33,5 @@ Method #2:
 - [ ] TNT
 - [ ] Fire
 - [ ] Water
-- [ ] Missile
+- [ ] Missiles
 - [ ] Fixing any bugs I find
