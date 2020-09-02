@@ -15,7 +15,7 @@ function updateAndDrawGridWorld() {
 
                 if (bitBelow && bitToUpdate.y <= 99 - bitToUpdate.mat.toppleHeight) {
                     if (bitToUpdate.mat.name == 'dirtmat') {
-                        // handleHeightRestrictionPhysics(x, y)
+                        handleHeightRestrictionPhysics(x, y)
                     } else if (bitToUpdate.mat.name == 'sandmat') {
                         handleSandPhysics(x, y)
                     }

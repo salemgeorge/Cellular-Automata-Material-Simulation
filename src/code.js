@@ -16,9 +16,9 @@ let sandMat = {
 
 let dirtMat = {
     name: 'dirtmat',
-    // mass: 90,
-    mass: 0,
-    toppleHeight: 1,
+    mass: 90,
+    // mass: 0,
+    toppleHeight: 2,
     isToppling: false,
     shouldRevaluateTopple: true,
     toppleDirection: 'left',
@@ -94,7 +94,7 @@ window.addEventListener('keydown', event => {
     if(event.key == ' ') {
         let coords = getGridIndexFromWorld(mouseX, mouseY)
         if(coords.gridIndexX + 10 > 99) return
-        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1)
+        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 2)
     }
 });
 
