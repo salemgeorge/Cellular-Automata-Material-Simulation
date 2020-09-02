@@ -33,6 +33,6 @@ Method #2:
 - [ ] TNT
 - [ ] Fire
 - [ ] Water
-* [ ] Density
+  - [ ] Density
 - [ ] Missiles
 - [ ] Fixing any bugs I find
