@@ -20,4 +20,5 @@ Gravity,
 Toppling,
 Sand,
 Dirt,
+Smoke,
 Destruction
