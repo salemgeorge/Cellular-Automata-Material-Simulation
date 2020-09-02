@@ -94,7 +94,7 @@ window.addEventListener('keydown', event => {
     if(event.key == ' ') {
         let coords = getGridIndexFromWorld(mouseX, mouseY)
         if(coords.gridIndexX + 10 > 99) return
-        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 1)
+        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 2)
     }
 });
 
