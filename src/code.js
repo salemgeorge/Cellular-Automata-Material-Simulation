@@ -18,7 +18,7 @@ let dirtMat = {
     name: 'dirtmat',
     mass: 90,
     // mass: 0,
-    toppleHeight: 1,
+    toppleHeight: 2,
     isToppling: false,
     shouldRevaluateTopple: true,
     toppleDirection: 'left',
