@@ -1,0 +1,97 @@
+<head lang="en">
+    <meta charset="UTF-8">
+    <style>
+        canvas {
+            border: 2px solid black;
+        }
+
+        a {
+            background-color: #C8C0BF;
+            box-shadow: 0 10px 0 #A49F9F;
+            color: white;
+            padding: 1em 1.5em;
+            position: relative;
+            text-decoration: none;
+            text-transform: uppercase;
+            border: 2px solid #9E9998;
+            border-radius: 8px;
+            transition-duration: .2s;
+            top: 20px;
+        }
+
+        a:hover {
+            background-color: #BBB2B0;
+        }
+
+        a:active {
+            box-shadow: none;
+            top: 30px;
+        }
+
+        h1 {
+            color:rgb(216, 187, 143);
+            margin-bottom: 1px;
+        }
+
+        hr {
+            color:rgb(189, 104, 0);
+            margin-top: 1px;
+            margin-bottom: 1px;
+            margin-left: -4px;
+        }
+
+        img {
+            width: 48px;
+            height: 48px;
+            margin-top: -22px;
+        }
+
+        .sideBar {
+            margin-left: 520px;
+            margin-top: -450px;
+        }
+
+        .newLine {
+            padding-top: 10px;
+        }
+
+        .extraSpaceNewLine {
+            padding-top: 35px;
+        }
+    </style>
+</head>
+
+<h1>
+    Material Simulation!
+    <img src="assets/menu-sprites/title-sprite.png">
+</h1>
+
+<hr>
+
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<h2>
+    <a href="home.html">Go Back</a>
+</h2>
+
+<h3 class="sideBar">
+    <div id="sandSelector">
+        Sand
+    </div>
+    <div id="dirtSelector" class="newLine">
+        Dirt
+    </div>
+    <div id="smokeSelector" class="newLine">
+        Smoke
+    </div>
+    <div id="woodSelector" class="newLine">
+        Wood
+    </div>
+
+    <div id="spawnType" class="extraSpaceNewLine">
+        Spawn Type: Single Bit
+    </div>
+</h3>
+
+<script src="functions.js"></script>
+<script src="code.js"></script>

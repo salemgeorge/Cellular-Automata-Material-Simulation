@@ -143,7 +143,6 @@ function updateAndDrawGridWorld() {
 
                 switch(bitToUpdate.mat.name) {
                     case 'woodmat':
-                        console.log(grid[x][y].mat)
                         handleOverlay(x, y)
                             // if(grid[x][y].mat.currentOverlay) {
                             //     console.log('has overlay')

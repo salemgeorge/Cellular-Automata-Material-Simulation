@@ -1,6 +1,19 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
+const sandSelector = document.getElementById('sandSelector')
+const dirtSelector = document.getElementById('dirtSelector')
+const smokeSelector = document.getElementById('smokeSelector')
+const woodSelector = document.getElementById('woodSelector')
+
+const spawnTypeSelector = document.getElementById('spawnType')
+
+sandSelector.style.color = 'black'
+
+dirtSelector.style.color = 'lightgray'
+smokeSelector.style.color = 'lightgray'
+woodSelector.style.color = 'lightgray'
+
 let sandMat = {
     name: 'sandmat',
     currentOverlay: null,
@@ -52,7 +65,6 @@ let woodMat = {
     isBurning: false,
     burnTime: 5,
     currentBurnProgress: 0,
-    spreadChance:
     mass: 95,
     toppleDirection: 'down',
     hasGravity: true,
@@ -84,6 +96,7 @@ let mouseX = 0;
 let mouseY = 0;
 
 let currentSelectedMatIndex = 0;
+let currentSpawnType = 1;
 
 let roundDown = function(num, precision) {
     num = parseFloat(num);
@@ -110,22 +123,105 @@ function update() {
 }
 
 window.addEventListener('keydown', event => {
-    if(event.key == 'ArrowRight') {
+    if(event.key == 'ArrowDown') {
         if(currentSelectedMatIndex == matList.length - 1) return;
         currentSelectedMatIndex++;
+
+        switch(currentSelectedMatIndex) {
+            case 0:
+                sandSelector.style.color = 'black'
+
+                dirtSelector.style.color = 'lightgray'
+                smokeSelector.style.color = 'lightgray'
+                woodSelector.style.color = 'lightgray'
+                break
+            case 1:
+                dirtSelector.style.color = 'black'
+
+                sandSelector.style.color = 'lightgray'
+                smokeSelector.style.color = 'lightgray'
+                woodSelector.style.color = 'lightgray'
+                break
+            case 2:
+                smokeSelector.style.color = 'black'
+
+                sandSelector.style.color = 'lightgray'
+                dirtSelector.style.color = 'lightgray'
+                woodSelector.style.color = 'lightgray'
+                break;
+            case 3:
+                woodSelector.style.color = 'black'
+
+                sandSelector.style.color = 'blalightgrayck'
+                dirtSelector.style.color = 'lightgray'
+                smokeSelector.style.color = 'lightgray'
+                break;
+        }
+        return;
+    }
+
+    if(event.key == 'ArrowUp') {
+        if(currentSelectedMatIndex == 0) return;
+        currentSelectedMatIndex--;
+
+        switch(currentSelectedMatIndex) {
+            case 0:
+                sandSelector.style.color = 'black'
+
+                dirtSelector.style.color = 'lightgray'
+                smokeSelector.style.color = 'lightgray'
+                woodSelector.style.color = 'lightgray'
+                break
+            case 1:
+                dirtSelector.style.color = 'black'
+
+                sandSelector.style.color = 'lightgray'
+                smokeSelector.style.color = 'lightgray'
+                woodSelector.style.color = 'lightgray'
+                break
+            case 2:
+                smokeSelector.style.color = 'black'
+
+                sandSelector.style.color = 'lightgray'
+                dirtSelector.style.color = 'lightgray'
+                woodSelector.style.color = 'lightgray'
+                break;
+            case 3:
+                woodSelector.style.color = 'black'
+
+                sandSelector.style.color = 'blalightgrayck'
+                dirtSelector.style.color = 'lightgray'
+                smokeSelector.style.color = 'lightgray'
+                break;
+        }
         return;
     }
 
     if(event.key == 'ArrowLeft') {
-        if(currentSelectedMatIndex == 0) return;
-        currentSelectedMatIndex--;
+        if(currentSpawnType > 1) currentSpawnType--;
+        else currentSpawnType = 2;
+
+        if(currentSpawnType == 1) spawnTypeSelector.innerHTML = 'Spawn Type: Single Bit'
+        else if(currentSpawnType == 2) spawnTypeSelector.innerHTML = 'Spawn Type: Multiple Bits'
+        
+        return;
+    }
+
+    if(event.key == 'ArrowRight') {
+        if(currentSpawnType < 2) currentSpawnType++;
+        else currentSpawnType = 1;
+
+        if(currentSpawnType == 1) spawnTypeSelector.innerHTML = 'Spawn Type: Single Bit'
+        else if(currentSpawnType == 2) spawnTypeSelector.innerHTML = 'Spawn Type: Multiple Bits'
+
         return;
     }
 
     if(event.key == ' ') {
         let coords = getGridIndexFromWorld(mouseX, mouseY)
-        if(coords.gridIndexX + 10 > 99) return
-        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], 2)
+        if(coords.gridIndexX + 10 > 99) return;
+        spawnBit(coords.gridIndexX, bitCoords.gridIndexY, matList[currentSelectedMatIndex], currentSpawnType)
+        return;
     }
 });
 
