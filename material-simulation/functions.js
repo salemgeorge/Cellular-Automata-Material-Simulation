@@ -118,52 +118,87 @@ function updateAndDrawGridWorld() {
                 continue;
 
             } else if(bitToUpdate.mat.canBurn) {
-                if (bitToUpdate.mat.isBurning) {
-                    grid[x][y].mat.color =  '#C70039'
-                    
-                    grid[x][y].mat.currentBurnProgress += 0.1
-                    if(grid[x][y].mat.currentBurnProgress >= grid[x][y].mat.burnTime) {
-                        grid[x][y].mat.currentBurnProgress = 0
-
-                        let bitUp = getBitFromGrid(x, y - 1)
-                        if(bitUp && !bitUp.mat.currentOverlay) {
-                            grid[x][y - 1].mat.currentOverlay = { ...smokeOverlayMat }
-                        } else {
-                            spawnBit(x, y - 1, smokeMat, 1)
-                        }
-
-                        let bitLeft = getBitFromGrid(x - 1, y)
-                        if(bitLeft) {
-                            if(!bitLeft.mat.isBurning && bitLeft.mat.canBurn) {
-                                grid[x - 1][ y].mat.isBurning = true
-                            }
-                        }
+                if(!bitToUpdate.mat.wasBurntCompletely) {
+                    switch(bitToUpdate.mat.name) {
+                        case 'woodmat':
+                            handleFire(x, y)
+                            if(!grid[x][y]) continue;
+                            handleOverlay(x, y)
+                            break;
                     }
+                } else {
+                    grid[x][y].mat.color = 'black'
+                    handleOverlay(x, y)
                 }
 
-                switch(bitToUpdate.mat.name) {
-                    case 'woodmat':
-                        handleOverlay(x, y)
-                            // if(grid[x][y].mat.currentOverlay) {
-                            //     console.log('has overlay')
-                            //     grid[x][y].mat.currentOverlay.currentUpdateProgress += bitToUpdate.mat.currentOverlay.mass
 
-                            //     if(grid[x][y].mat.currentOverlay.currentUpdateProgress >= grid[x][y].mat.currentOverlay.timeBetweenUpdate) {
-                            //         grid[x][y].mat.currentOverlay.currentUpdateProgress = 0;
+                // if (bitToUpdate.mat.isBurning) {
+                //     grid[x][y].mat.color =  '#C70039'
+                    
+                //     grid[x][y].mat.currentBurnProgress += 0.1
+                //     if(grid[x][y].mat.currentBurnProgress >= grid[x][y].mat.burnTime) {
+                //         grid[x][y].mat.currentBurnProgress = 0
 
-                            //         let bitUp = getBitFromGrid(x, y - 1)
-                            //         if(bitUp && !bitUp.mat.currentOverlay) {
-                            //             grid[x][y - 1].mat.currentOverlay = grid[x][y].mat.currentOverlay
-                            //             grid[x][y].mat.currentOverlay = null
+                //         let shouldCreateSmoke = Math.random() * 100
+                //         if(shouldCreateSmoke <= bitToUpdate.mat.particleChance) {
+                //             let bitUp = getBitFromGrid(x, y - 1)
+                //             if(bitUp && !bitUp.mat.currentOverlay) {
+                //                 grid[x][y - 1].mat.currentOverlay = { ...smokeOverlayMat }
+                //             } else {
+                //                 spawnBit(x, y - 1, smokeMat, 1)
+                //             }
+                //         }
 
-                            //         } else if(!bitUp) {
-                            //             grid[x][y].mat.currentOverlay = null
-                            //             spawnBit(x, y - 1, smokeMat, 1)
-                            //         }
-                            //     }
-                            // }
-                        break;
-                }
+                //         let shouldSpread = Math.random() * 100
+                //         if(shouldSpread <= bitToUpdate.mat.fireSpreadChance) {
+                //             if(bitToUpdate.mat.bitHealth > 0) {
+                //                 bitToUpdate.mat.bitHealth--;
+
+                //                 spreadDir = roundDown(Math.random() * 4, 1)
+
+                //                 switch(spreadDir) {
+                //                     case 0:
+                //                         let bitLeft = getBitFromGrid(x - 1, y)
+                //                         if(bitLeft) {
+                //                             if(!bitLeft.mat.isBurning && bitLeft.mat.canBurn) {
+                //                                 grid[x - 1][ y].mat.isBurning = true
+                //                             }
+                //                         }
+                //                         // break;
+                //                     case 1:
+                //                         let bitUp = getBitFromGrid(x, y - 1)
+                //                         if(bitUp) {
+                //                             if(!bitUp.mat.isBurning && bitUp.mat.canBurn) {
+                //                                 grid[x][y - 1].mat.isBurning = true
+                //                             }
+                //                         }
+                //                         // break;
+                //                     case 2:
+                //                         let bitRight = getBitFromGrid(x + 1, y)
+                //                         if(bitRight) {
+                //                             if(!bitRight.mat.isBurning && bitRight.mat.canBurn) {
+                //                                 grid[x + 1][ y].mat.isBurning = true
+                //                             }
+                //                         }
+                //                         // break;
+                //                     case 3:
+                //                         let bitDown = getBitFromGrid(x, y + 1)
+                //                         if(bitDown) {
+                //                             if(!bitDown.mat.isBurning && bitDown.mat.canBurn) {
+                //                                 grid[x][y + 1].mat.isBurning = true
+                //                             }
+                //                         }
+                //                         // break;
+                //                 }
+                //             } else {
+                //                 grid[x][y].mat.canBurn = false
+                //                 grid[x][y].mat.color = 'black'
+
+                //                 setTimeout(destroyBit, 750, x, y)
+                //             }
+                //         }
+                //     }
+                // }
 
                 // drawBit(x, y, bitToUpdate.mat.color)
 
@@ -268,13 +303,6 @@ function spawnBit(x, y, mat, spawnType) {
                 }
             }
             break;
-    }
-}
-
-function spawnOverlayBit(x, y, overlayType) {
-    switch(overlayType) {
-        case 0:
-            
     }
 }
 
@@ -425,7 +453,6 @@ function handleSmokePhysics(x, y) {
             grid[x][y].mat.toppleDirection = 'right'
         }
     }
-
 }
 
 function handleOverlay(x, y) {
@@ -445,6 +472,91 @@ function handleOverlay(x, y) {
             } else if(!bitUp) {
                 grid[x][y].mat.currentOverlay = null
                 spawnBit(x, y - 1, smokeMat, 1)
+            }
+        }
+    }
+}
+
+function handleFire(x, y) {
+    let bitToUpdate = grid[x][y]
+
+    if (bitToUpdate.mat.isBurning) {
+        grid[x][y].mat.color = '#C70039'
+        
+        grid[x][y].mat.currentBurnProgress += 0.1
+        if(grid[x][y].mat.currentBurnProgress >= grid[x][y].mat.burnTime) {
+            grid[x][y].mat.currentBurnProgress = 0
+
+            let shouldCreateSmoke = Math.random() * 100
+            if(shouldCreateSmoke <= bitToUpdate.mat.particleChance) {
+                let bitUp = getBitFromGrid(x, y - 1)
+                if(bitUp && !bitUp.mat.currentOverlay) {
+                    grid[x][y - 1].mat.currentOverlay = { ...smokeOverlayMat }
+                } else {
+                    spawnBit(x, y - 1, smokeMat, 1)
+                }
+            }
+
+            let shouldSpread = Math.random() * 100
+            if(shouldSpread <= bitToUpdate.mat.fireSpreadChance) {
+                if(bitToUpdate.mat.bitLife > 0) {
+                    bitToUpdate.mat.bitLife--
+
+                    spreadDir = roundDown(Math.random() * 4, 1)
+
+                    switch(spreadDir) {
+                        case 0:
+                            if(x <= 0) break;
+
+                            let bitLeft = getBitFromGrid(x - 1, y)
+                            if(bitLeft) {
+                                if(!bitLeft.mat.isBurning && bitLeft.mat.canBurn) {
+                                    grid[x - 1][ y].mat.isBurning = true
+                                }
+                            }
+                            break;
+                        case 1:
+                            if(y <= 0) break;
+
+                            let bitUp = getBitFromGrid(x, y - 1)
+                            if(bitUp) {
+                                if(!bitUp.mat.isBurning && bitUp.mat.canBurn) {
+                                    grid[x][y - 1].mat.isBurning = true
+                                }
+                            }
+                            break;
+                        case 2:
+                            if(x >= 99) break;
+
+                            let bitRight = getBitFromGrid(x + 1, y)
+                            if(bitRight) {
+                                if(!bitRight.mat.isBurning && bitRight.mat.canBurn) {
+                                    grid[x + 1][ y].mat.isBurning = true
+                                }
+                            }
+                            break;
+                        case 3:
+                            if(y >= 99) break;
+
+                            let bitDown = getBitFromGrid(x, y + 1)
+                            if(bitDown) {
+                                if(!bitDown.mat.isBurning && bitDown.mat.canBurn) {
+                                    grid[x][y + 1].mat.isBurning = true
+                                }
+                            }
+                            break;
+                    }
+                } else {
+                    // grid[x][y].mat.canBurn = false
+                    let shouldDestroyBit = Math.random()
+                    if(shouldDestroyBit < 0.1) {
+                        destroyBit(x, y)
+                    } else {
+                        grid[x][y].mat.wasBurntCompletely = true;
+                    }
+
+                    // setTimeout(destroyBit, 1000, x, y)
+                }
             }
         }
     }
